@@ -2,7 +2,6 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SEGURIDAD: cambia esta clave antes de desplegar en producción
 SECRET_KEY = 'django-insecure-gestor-reservas-clave-desarrollo-cambiar-en-produccion'
 
 DEBUG = True
@@ -16,7 +15,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Apps propias
     'accounts',
     'reservas',
 ]
@@ -71,18 +69,16 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = []
+STATIC_ROOT = str(BASE_DIR / 'staticfiles')
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = str(BASE_DIR / 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Autenticación
 LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = 'reservas:home'
 LOGOUT_REDIRECT_URL = 'reservas:home'
 
-# Email - backend de consola para desarrollo (los emails se imprimen en la terminal)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'GestorReservas <no-reply@gestorreservas.com>'
