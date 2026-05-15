@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ resource.name }} - GestorReservas{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'reservas:resource_list' %}">Pistas</a></li>
+        <li class="breadcrumb-item active">{{ resource.name }}</li>
+    </ol>
+</nav>
+
+<div class="row g-4">
+    <!-- Info de la pista -->
+    <div class="col-md-5">
+        <div class="card shadow-sm border-0">
+            {% if resource.image %}
+                <img src="{{ resource.image.url }}" class="card-img-top rounded-top" alt="{{ resource.name }}" style="max-height:260px; object-fit:cover;">
+            {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center rounded-top" style="height:200px;">
+                    <i class="bi bi-image text-muted" style="font-size:4rem;"></i>
+                </div>
+            {% endif %}
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h2 class="h4 mb-0">{{ resource.name }}</h2>
+                    <span class="badge bg-secondary">{{ resource.get_sport_type_display }}</span>
+                </div>
+                <p class="text-muted">{{ resource.description|default:"Sin descripción disponible." }}</p>
+                <ul class="list-unstyled">
+                    <li class="mb-1"><i class="bi bi-people text-primary"></i> <strong>Capacidad:</strong> {{ resource.capacity }} jugadores</li>
+                    <li><i class="bi bi-tag text-primary"></i> <strong>Precio:</strong> {{ resource.price_per_hour }}€/hora</li>
+                </ul>
+            </div>
+            <div class="card-footer bg-transparent">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'reservas:booking_create_for_resource' resource.pk %}" class="btn btn-primary w-100">
+                        <i class="bi bi-calendar-plus"></i> Reservar esta pista
+                    </a>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-box-arrow-in-right"></i> Inicia sesión para reservar
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Horario semanal -->
+        {% if availabilities %}
+            <div class="card mt-3 shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-clock text-primary"></i> Horario semanal</h5>
+                    <table class="table table-sm mb-0">
+                        <tbody>
+                            {% for av in availabilities %}
+                                <tr>
+                                    <td class="fw-semibold">{{ av.get_day_of_week_display }}</td>
+                                    <td>{{ av.start_time|time:"H:i" }} – {{ av.end_time|time:"H:i" }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Consulta de disponibilidad -->
+    <div class="col-md-7">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h4 class="card-title"><i class="bi bi-calendar2-check text-primary"></i> Consultar disponibilidad</h4>
+
+                <!-- Selector de fecha -->
+                <form method="get" class="mb-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+                        <input type="date"
+                               name="fecha"
+                               class="form-control"
+                               value="{{ selected_date|date:'Y-m-d'|default:'' }}"
+                               min="{{ today|date:'Y-m-d' }}">
+                        <button type="submit" class="btn btn-primary">Consultar</button>
+                    </div>
+                </form>
+
+                {% if selected_date %}
+                    <h5 class="h6 text-muted mb-3">
+                        Reservas del <strong>{{ selected_date|date:"l, d/m/Y" }}</strong>
+                    </h5>
+
+                    {% if booked_slots %}
+                        <div class="list-group mb-3">
+                            {% for slot in booked_slots %}
+                                <div class="list-group-item list-group-item-danger d-flex justify-content-between align-items-center">
+                                    <span>
+                                        <i class="bi bi-x-circle-fill text-danger me-1"></i>
+                                        {{ slot.start_time|time:"H:i" }} – {{ slot.end_time|time:"H:i" }}
+                                    </span>
+                                    <span class="badge bg-danger">Ocupado</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle-fill"></i>
+                            ¡Pista libre todo el día! Puedes reservar cualquier horario.
+                        </div>
+                    {% endif %}
+
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'reservas:booking_create_for_resource' resource.pk %}?fecha={{ selected_date|date:'Y-m-d' }}"
+                           class="btn btn-primary">
+                            <i class="bi bi-calendar-plus"></i> Reservar el {{ selected_date|date:"d/m/Y" }}
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <p class="text-muted">Selecciona una fecha para ver los tramos ocupados.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

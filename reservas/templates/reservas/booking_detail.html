@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Reserva #{{ booking.pk }} - GestorReservas{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'reservas:booking_list' %}">Mis reservas</a></li>
+        <li class="breadcrumb-item active">Reserva #{{ booking.pk }}</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                <h2 class="h5 mb-0">
+                    <i class="bi bi-calendar-check text-primary"></i> Reserva #{{ booking.pk }}
+                </h2>
+                <span class="badge fs-6
+                    {% if booking.status == 'confirmed' %}bg-success
+                    {% elif booking.status == 'pending' %}bg-warning text-dark
+                    {% else %}bg-secondary{% endif %}">
+                    {{ booking.get_status_display }}
+                </span>
+            </div>
+            <div class="card-body p-4">
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <th class="text-muted" width="40%">Pista</th>
+                            <td>
+                                <a href="{% url 'reservas:resource_detail' booking.resource.pk %}">
+                                    {{ booking.resource.name }}
+                                </a>
+                                <span class="badge bg-secondary ms-1">{{ booking.resource.get_sport_type_display }}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Fecha</th>
+                            <td>{{ booking.date|date:"l, d/m/Y" }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Horario</th>
+                            <td>{{ booking.start_time|time:"H:i" }} – {{ booking.end_time|time:"H:i" }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Duración</th>
+                            <td>{{ booking.duration_hours|floatformat:1 }} hora(s)</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Precio estimado</th>
+                            <td class="fw-semibold">{{ booking.total_price|floatformat:2 }} €</td>
+                        </tr>
+                        {% if booking.is_recurring %}
+                            <tr>
+                                <th class="text-muted">Recurrencia</th>
+                                <td>
+                                    <span class="badge bg-info">
+                                        <i class="bi bi-arrow-repeat"></i> {{ booking.get_recurrence_type_display }}
+                                    </span>
+                                    hasta el {{ booking.recurrence_end_date|date:"d/m/Y" }}
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% if booking.notes %}
+                            <tr>
+                                <th class="text-muted">Notas</th>
+                                <td>{{ booking.notes }}</td>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <th class="text-muted">Creada el</th>
+                            <td>{{ booking.created_at|date:"d/m/Y H:i" }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer bg-transparent d-flex gap-2">
+                <a href="{% url 'reservas:booking_list' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+                {% if booking.can_be_cancelled %}
+                    <a href="{% url 'reservas:booking_cancel' booking.pk %}" class="btn btn-outline-danger ms-auto">
+                        <i class="bi bi-x-circle"></i> Cancelar reserva
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Pistas - GestorReservas{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="bi bi-grid text-primary"></i> Pistas disponibles</h1>
+    {% if user.is_authenticated %}
+        <a href="{% url 'reservas:booking_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Nueva reserva
+        </a>
+    {% endif %}
+</div>
+
+<!-- Filtro por deporte -->
+<div class="card mb-4 border-0 shadow-sm">
+    <div class="card-body">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Filtrar por deporte</label>
+                <select name="deporte" class="form-select" onchange="this.form.submit()">
+                    <option value="">Todos los deportes</option>
+                    {% for value, label in sport_choices %}
+                        <option value="{{ value }}" {% if sport_filter == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% if sport_filter %}
+                <div class="col-auto">
+                    <a href="{% url 'reservas:resource_list' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle"></i> Quitar filtro
+                    </a>
+                </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<!-- Listado -->
+{% if resources %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for resource in resources %}
+            <div class="col">
+                <div class="card h-100 booking-card shadow-sm">
+                    {% if resource.image %}
+                        <img src="{{ resource.image.url }}" class="card-img-top" alt="{{ resource.name }}" style="height:160px; object-fit:cover;">
+                    {% else %}
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height:160px;">
+                            <i class="bi bi-image text-muted" style="font-size:3rem;"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">{{ resource.name }}</h5>
+                            <span class="badge bg-secondary ms-2">{{ resource.get_sport_type_display }}</span>
+                        </div>
+                        <p class="card-text text-muted small">{{ resource.description|truncatewords:20|default:"Sin descripción." }}</p>
+                        <ul class="list-unstyled small text-muted mb-0">
+                            <li><i class="bi bi-people"></i> Capacidad: {{ resource.capacity }} jugadores</li>
+                            <li><i class="bi bi-currency-euro"></i> Precio: {{ resource.price_per_hour }}€/hora</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer bg-transparent d-flex gap-2">
+                        <a href="{% url 'reservas:resource_detail' resource.pk %}" class="btn btn-outline-primary btn-sm flex-fill">
+                            <i class="bi bi-eye"></i> Ver disponibilidad
+                        </a>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'reservas:booking_create_for_resource' resource.pk %}" class="btn btn-primary btn-sm flex-fill">
+                                <i class="bi bi-calendar-plus"></i> Reservar
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info text-center py-5">
+        <i class="bi bi-search" style="font-size:2rem;"></i>
+        <p class="mt-3 mb-0">No se encontraron pistas con ese criterio.</p>
+    </div>
+{% endif %}
+{% endblock %}

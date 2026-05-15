@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - GestorReservas{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<div class="p-5 mb-4 bg-primary text-white rounded-3">
+    <div class="container-fluid py-2">
+        <h1 class="display-5 fw-bold">
+            <i class="bi bi-tennis"></i> GestorReservas
+        </h1>
+        <p class="col-md-8 fs-4">Reserva tu pista deportiva en segundos. Pádel, tenis, fútbol sala y más.</p>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'reservas:resource_list' %}" class="btn btn-light btn-lg">
+                <i class="bi bi-grid"></i> Ver pistas disponibles
+            </a>
+            {% if not user.is_authenticated %}
+                <a href="{% url 'accounts:register' %}" class="btn btn-outline-light btn-lg">
+                    <i class="bi bi-person-plus"></i> Crear cuenta gratis
+                </a>
+            {% else %}
+                <a href="{% url 'reservas:booking_create' %}" class="btn btn-outline-light btn-lg">
+                    <i class="bi bi-plus-circle"></i> Nueva reserva
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Pistas disponibles -->
+    <div class="col-lg-8">
+        <h2 class="h4 mb-3"><i class="bi bi-grid text-primary"></i> Nuestras pistas</h2>
+        {% if resources %}
+            <div class="row row-cols-1 row-cols-md-2 g-3">
+                {% for resource in resources %}
+                    <div class="col">
+                        <div class="card h-100 booking-card shadow-sm">
+                            {% if resource.image %}
+                                <img src="{{ resource.image.url }}" class="card-img-top" alt="{{ resource.name }}" style="height:140px; object-fit:cover;">
+                            {% else %}
+                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height:140px;">
+                                    <i class="bi bi-image text-muted" style="font-size:3rem;"></i>
+                                </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ resource.name }}</h5>
+                                <p class="card-text text-muted small">{{ resource.description|truncatewords:15 }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-secondary sport-badge">
+                                        {{ resource.get_sport_type_display }}
+                                    </span>
+                                    <span class="fw-semibold text-primary">{{ resource.price_per_hour }}€/h</span>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a href="{% url 'reservas:resource_detail' resource.pk %}" class="btn btn-outline-primary btn-sm w-100">
+                                    <i class="bi bi-eye"></i> Ver disponibilidad
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> No hay pistas disponibles en este momento.
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Próximas reservas del usuario -->
+    <div class="col-lg-4">
+        {% if user.is_authenticated %}
+            <h2 class="h4 mb-3"><i class="bi bi-calendar-check text-primary"></i> Tus próximas reservas</h2>
+            {% if upcoming_bookings %}
+                <div class="list-group">
+                    {% for booking in upcoming_bookings %}
+                        <a href="{% url 'reservas:booking_detail' booking.pk %}"
+                           class="list-group-item list-group-item-action">
+                            <div class="fw-semibold">{{ booking.resource.name }}</div>
+                            <small class="text-muted">
+                                <i class="bi bi-calendar3"></i> {{ booking.date|date:"d/m/Y" }}
+                                &nbsp;
+                                <i class="bi bi-clock"></i> {{ booking.start_time|time:"H:i" }}–{{ booking.end_time|time:"H:i" }}
+                            </small>
+                        </a>
+                    {% endfor %}
+                </div>
+                <a href="{% url 'reservas:booking_list' %}" class="btn btn-link btn-sm mt-2 ps-0">
+                    Ver todas mis reservas &rarr;
+                </a>
+            {% else %}
+                <div class="card bg-light border-0">
+                    <div class="card-body text-center py-4">
+                        <i class="bi bi-calendar-x text-muted" style="font-size:2rem;"></i>
+                        <p class="mt-2 mb-3 text-muted">No tienes reservas próximas.</p>
+                        <a href="{% url 'reservas:booking_create' %}" class="btn btn-primary btn-sm">
+                            <i class="bi bi-plus-circle"></i> Reservar ahora
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="card bg-light border-0">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-person-circle text-muted" style="font-size:2.5rem;"></i>
+                    <p class="mt-2 mb-3 text-muted">Inicia sesión para gestionar tus reservas.</p>
+                    <a href="{% url 'accounts:login' %}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-box-arrow-in-right"></i> Iniciar sesión
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Acceso rápido al calendario -->
+        <div class="card mt-3 border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-calendar3 text-primary" style="font-size:2rem;"></i>
+                <p class="mt-2 mb-2 small">Consulta la ocupación de todas las pistas en el calendario mensual.</p>
+                <a href="{% url 'reservas:calendar' %}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-calendar3"></i> Abrir calendario
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

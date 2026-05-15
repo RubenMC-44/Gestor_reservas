@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel de Gestión - GestorReservas{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">
+        <i class="bi bi-shield-check text-primary"></i> Panel de gestión
+    </h1>
+    <span class="badge bg-secondary fs-6">{{ total }} reserva(s)</span>
+</div>
+
+<!-- Filtros -->
+<div class="card mb-4 border-0 shadow-sm">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Estado</label>
+                <select name="estado" class="form-select">
+                    <option value="">Todos los estados</option>
+                    {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Pista</label>
+                <select name="pista" class="form-select">
+                    <option value="">Todas las pistas</option>
+                    {% for r in resources %}
+                        <option value="{{ r.pk }}" {% if resource_filter == r.pk|stringformat:'s' %}selected{% endif %}>
+                            {{ r.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Fecha</label>
+                <input type="date" name="fecha" class="form-control" value="{{ date_filter }}">
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-fill">
+                    <i class="bi bi-funnel"></i> Filtrar
+                </button>
+                <a href="{% url 'reservas:admin_panel' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x"></i>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tabla de reservas -->
+{% if bookings %}
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Usuario</th>
+                        <th>Pista</th>
+                        <th>Fecha</th>
+                        <th>Horario</th>
+                        <th>Estado</th>
+                        <th>Recurrente</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                        <tr>
+                            <td>{{ booking.pk }}</td>
+                            <td>
+                                <span title="{{ booking.user.email }}">
+                                    {{ booking.user.get_full_name|default:booking.user.username }}
+                                </span>
+                            </td>
+                            <td>{{ booking.resource.name }}</td>
+                            <td>{{ booking.date|date:"d/m/Y" }}</td>
+                            <td>{{ booking.start_time|time:"H:i" }}–{{ booking.end_time|time:"H:i" }}</td>
+                            <td>
+                                <span class="badge
+                                    {% if booking.status == 'confirmed' %}bg-success
+                                    {% elif booking.status == 'pending' %}bg-warning text-dark
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ booking.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if booking.is_recurring %}
+                                    <i class="bi bi-arrow-repeat text-info" title="Semanal hasta {{ booking.recurrence_end_date|date:'d/m/Y' }}"></i>
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if booking.status != 'cancelled' %}
+                                    <form method="post" action="{% url 'reservas:admin_cancel_booking' booking.pk %}"
+                                          onsubmit="return confirm('¿Cancelar reserva #{{ booking.pk }}?')">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-x-circle"></i> Cancelar
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <span class="text-muted small">Cancelada</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% else %}
+    <div class="alert alert-info text-center py-4">
+        <i class="bi bi-search" style="font-size:2rem;"></i>
+        <p class="mt-2 mb-0">No hay reservas con los filtros seleccionados.</p>
+    </div>
+{% endif %}
+{% endblock %}

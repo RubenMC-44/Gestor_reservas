@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Mis Reservas - GestorReservas{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="bi bi-calendar-check text-primary"></i> {{ title }}</h1>
+    <a href="{% url 'reservas:booking_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Nueva reserva
+    </a>
+</div>
+
+<!-- Filtros -->
+<div class="btn-group mb-4" role="group">
+    <a href="?filter=upcoming" class="btn btn-{% if filter_type == 'upcoming' %}primary{% else %}outline-primary{% endif %}">
+        <i class="bi bi-calendar-event"></i> Próximas
+    </a>
+    <a href="?filter=past" class="btn btn-{% if filter_type == 'past' %}primary{% else %}outline-primary{% endif %}">
+        <i class="bi bi-clock-history"></i> Pasadas
+    </a>
+    <a href="?filter=cancelled" class="btn btn-{% if filter_type == 'cancelled' %}primary{% else %}outline-primary{% endif %}">
+        <i class="bi bi-x-circle"></i> Canceladas
+    </a>
+</div>
+
+{% if bookings %}
+    <div class="row g-3">
+        {% for booking in bookings %}
+            <div class="col-12">
+                <div class="card booking-card shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h5 class="mb-1">{{ booking.resource.name }}</h5>
+                                <p class="text-muted mb-1 small">
+                                    <i class="bi bi-tag"></i> {{ booking.resource.get_sport_type_display }}
+                                </p>
+                            </div>
+                            <div class="col-md-3">
+                                <div><i class="bi bi-calendar3 text-primary"></i> {{ booking.date|date:"d/m/Y" }}</div>
+                                <div><i class="bi bi-clock text-primary"></i> {{ booking.start_time|time:"H:i" }} – {{ booking.end_time|time:"H:i" }}</div>
+                                {% if booking.is_recurring %}
+                                    <div class="badge bg-info mt-1"><i class="bi bi-arrow-repeat"></i> Recurrente</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-3 text-md-end mt-2 mt-md-0">
+                                <span class="badge fs-6
+                                    {% if booking.status == 'confirmed' %}bg-success
+                                    {% elif booking.status == 'pending' %}bg-warning text-dark
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ booking.get_status_display }}
+                                </span>
+                                <div class="mt-2">
+                                    <a href="{% url 'reservas:booking_detail' booking.pk %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i> Ver
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info text-center py-5">
+        <i class="bi bi-calendar-x" style="font-size:2.5rem;"></i>
+        <p class="mt-3 mb-3">No tienes {{ title|lower }}.</p>
+        {% if filter_type == 'upcoming' %}
+            <a href="{% url 'reservas:booking_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Hacer una reserva
+            </a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

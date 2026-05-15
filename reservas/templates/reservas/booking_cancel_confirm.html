@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Cancelar Reserva - GestorReservas{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-danger">
+            <div class="card-body p-4 text-center">
+                <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size:3rem;"></i>
+                <h2 class="h4 mt-3">¿Cancelar esta reserva?</h2>
+                <p class="text-muted">Esta acción no se puede deshacer.</p>
+
+                <div class="alert alert-light text-start my-3">
+                    <strong>Pista:</strong> {{ booking.resource.name }}<br>
+                    <strong>Fecha:</strong> {{ booking.date|date:"d/m/Y" }}<br>
+                    <strong>Horario:</strong> {{ booking.start_time|time:"H:i" }} – {{ booking.end_time|time:"H:i" }}
+                </div>
+
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{% url 'reservas:booking_detail' booking.pk %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> No, volver
+                    </a>
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-x-circle"></i> Sí, cancelar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

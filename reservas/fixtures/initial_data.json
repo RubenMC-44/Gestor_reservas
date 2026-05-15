@@ -1,0 +1,222 @@
+[
+  {
+    "model": "reservas.resource",
+    "pk": 1,
+    "fields": {
+      "name": "Pista Pádel 1",
+      "sport_type": "padel",
+      "description": "Pista de pádel cubierta con iluminación LED. Suelo de césped artificial de última generación.",
+      "capacity": 4,
+      "price_per_hour": "12.00",
+      "is_active": true,
+      "image": ""
+    }
+  },
+  {
+    "model": "reservas.resource",
+    "pk": 2,
+    "fields": {
+      "name": "Pista Pádel 2",
+      "sport_type": "padel",
+      "description": "Pista de pádel exterior con vistas al jardín. Disponible todo el año.",
+      "capacity": 4,
+      "price_per_hour": "10.00",
+      "is_active": true,
+      "image": ""
+    }
+  },
+  {
+    "model": "reservas.resource",
+    "pk": 3,
+    "fields": {
+      "name": "Pista Tenis A",
+      "sport_type": "tenis",
+      "description": "Pista de tenis de tierra batida reglamentaria. Incluye servicio de mantenimiento diario.",
+      "capacity": 2,
+      "price_per_hour": "15.00",
+      "is_active": true,
+      "image": ""
+    }
+  },
+  {
+    "model": "reservas.resource",
+    "pk": 4,
+    "fields": {
+      "name": "Pista Fútbol Sala",
+      "sport_type": "futbol_sala",
+      "description": "Campo de fútbol sala cubierto con porterías fijas. Capacidad para 10 jugadores.",
+      "capacity": 10,
+      "price_per_hour": "25.00",
+      "is_active": true,
+      "image": ""
+    }
+  },
+  {
+    "model": "reservas.resource",
+    "pk": 5,
+    "fields": {
+      "name": "Pista Bádminton",
+      "sport_type": "badminton",
+      "description": "Pista de bádminton cubierta con red oficial y suelo de madera.",
+      "capacity": 4,
+      "price_per_hour": "8.00",
+      "is_active": true,
+      "image": ""
+    }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 1,
+    "fields": { "resource": 1, "day_of_week": 0, "start_time": "09:00:00", "end_time": "22:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 2,
+    "fields": { "resource": 1, "day_of_week": 1, "start_time": "09:00:00", "end_time": "22:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 3,
+    "fields": { "resource": 1, "day_of_week": 2, "start_time": "09:00:00", "end_time": "22:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 4,
+    "fields": { "resource": 1, "day_of_week": 3, "start_time": "09:00:00", "end_time": "22:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 5,
+    "fields": { "resource": 1, "day_of_week": 4, "start_time": "09:00:00", "end_time": "22:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 6,
+    "fields": { "resource": 1, "day_of_week": 5, "start_time": "09:00:00", "end_time": "21:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 7,
+    "fields": { "resource": 1, "day_of_week": 6, "start_time": "10:00:00", "end_time": "20:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 8,
+    "fields": { "resource": 2, "day_of_week": 0, "start_time": "09:00:00", "end_time": "22:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 9,
+    "fields": { "resource": 2, "day_of_week": 1, "start_time": "09:00:00", "end_time": "22:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 10,
+    "fields": { "resource": 2, "day_of_week": 2, "start_time": "09:00:00", "end_time": "22:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 11,
+    "fields": { "resource": 2, "day_of_week": 3, "start_time": "09:00:00", "end_time": "22:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 12,
+    "fields": { "resource": 2, "day_of_week": 4, "start_time": "09:00:00", "end_time": "22:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 13,
+    "fields": { "resource": 2, "day_of_week": 5, "start_time": "09:00:00", "end_time": "21:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 14,
+    "fields": { "resource": 3, "day_of_week": 0, "start_time": "08:00:00", "end_time": "21:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 15,
+    "fields": { "resource": 3, "day_of_week": 1, "start_time": "08:00:00", "end_time": "21:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 16,
+    "fields": { "resource": 3, "day_of_week": 2, "start_time": "08:00:00", "end_time": "21:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 17,
+    "fields": { "resource": 3, "day_of_week": 3, "start_time": "08:00:00", "end_time": "21:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 18,
+    "fields": { "resource": 3, "day_of_week": 4, "start_time": "08:00:00", "end_time": "21:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 19,
+    "fields": { "resource": 3, "day_of_week": 5, "start_time": "09:00:00", "end_time": "20:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 20,
+    "fields": { "resource": 4, "day_of_week": 0, "start_time": "08:00:00", "end_time": "23:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 21,
+    "fields": { "resource": 4, "day_of_week": 1, "start_time": "08:00:00", "end_time": "23:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 22,
+    "fields": { "resource": 4, "day_of_week": 2, "start_time": "08:00:00", "end_time": "23:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 23,
+    "fields": { "resource": 4, "day_of_week": 3, "start_time": "08:00:00", "end_time": "23:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 24,
+    "fields": { "resource": 4, "day_of_week": 4, "start_time": "08:00:00", "end_time": "23:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 25,
+    "fields": { "resource": 4, "day_of_week": 5, "start_time": "09:00:00", "end_time": "22:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 26,
+    "fields": { "resource": 4, "day_of_week": 6, "start_time": "10:00:00", "end_time": "21:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 27,
+    "fields": { "resource": 5, "day_of_week": 0, "start_time": "10:00:00", "end_time": "21:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 28,
+    "fields": { "resource": 5, "day_of_week": 1, "start_time": "10:00:00", "end_time": "21:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 29,
+    "fields": { "resource": 5, "day_of_week": 2, "start_time": "10:00:00", "end_time": "21:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 30,
+    "fields": { "resource": 5, "day_of_week": 3, "start_time": "10:00:00", "end_time": "21:00:00" }
+  },
+  {
+    "model": "reservas.availability",
+    "pk": 31,
+    "fields": { "resource": 5, "day_of_week": 4, "start_time": "10:00:00", "end_time": "21:00:00" }
+  }
+]
